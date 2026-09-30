@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nikioto2 · Портфолио</title>
+    <style>
+        /* Базовые настройки */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #fff;
+            color: #222;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: center; /* Центрируем весь контент по горизонтали */
+        }
+
+        /* --- ЦЕНТРАЛЬНЫЙ КОНТЕЙНЕР С ПОЛЯМИ --- */
+        .container {
+            width: 100%;
+            max-width: 1300px; /* Ограничиваем ширину, чтобы по бокам были поля */
+            padding: 0 2rem;   /* Внутренние отступы контейнера (поля) */
+        }
+
+        /* --- ШАПКА САЙТА --- */
+        .header {
+            position: relative; /* Убираем fixed, чтобы шапка участвовала в потоке и центрировалась */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+            z-index: 1000;
+            background-color: #fff; /* Фон шапки, чтобы текст не сливался */
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #222;
+            text-decoration: none;
+        }
+
+        .header nav {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .header nav a {
+            text-decoration: none;
+            color: #222;
+            font-size: 1.2rem;       
+            font-weight: 600;        
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-bottom: 0.2rem;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .header nav a:hover,
+        .header nav a.active {
+            border-bottom-color: #222;
+        }
+
+        /* --- ГАЛЕРЕЯ --- */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            margin-top: 2rem;
+        }
+
+        .item {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 4 / 3;
+            cursor: pointer;
+        }
+
+        .item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease, filter 0.4s ease;
+        }
+
+        .item:hover img {
+            transform: scale(1.02);
+            filter: brightness(0.7);
+        }
+
+        .item .caption {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            color: white;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .item:hover .caption {
+            opacity: 1;
+        }
+
+        .gallery.hidden-gallery {
+            display: none;
+        }
+
+        /* --- СТРАНИЦА КОНТАКТЫ (ЦЕНТРИРОВАНА) --- */
+        .contacts-page {
+            display: none;
+            margin-top: 3rem;
+            width: 100%;
+        }
+
+        .contacts-page.active-page {
+            display: flex;
+            justify-content: center; /* Центрируем блок контактов */
+        }
+
+        .contacts-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3rem;
+            align-items: flex-start;
+            max-width: 1100px; /* Ограничиваем ширину контактов, чтобы текст не разлетался */
+            padding: 0 2rem;
+        }
+
+        /* Портрет слева */
+        .contacts-portrait {
+            flex: 0 0 250px;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Информация справа */
+        .contacts-info {
+            flex: 1;
+            min-width: 250px;
+            max-width: 700px;
+        }
+
+        .contacts-info h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .contacts-info .subtitle {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+
+        .contacts-info .bio {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .contacts-list {
+            list-style: none;
+            font-size: 1.1rem;
+            line-height: 2;
+        }
+
+        .contacts-list a {
+            color: #222;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        .contacts-list a:hover {
+            text-decoration: none;
+        }
+
+        /* --- ЛАЙТБОКС --- */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        /* --- АДАПТИВНОСТЬ --- */
+        @media (max-width: 900px) {
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header nav {
+                width: 100%;
+                justify-content: flex-start;
+                gap: 1rem;
+            }
+            .header nav a {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 0.5rem;
+            }
+            .container {
+                padding: 0 0.5rem;
+            }
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+            .contacts-container {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .contacts-portrait {
+                flex: 0 0 150px;
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Шапка сайта -->
+        <header class="header">
+            <div class="logo">Nikioto2</div>
+            <nav>
+                <a class="nav-link active" data-page="murals">МУРАЛЫ</a>
+                <a class="nav-link" data-page="paintings">КАРТИНЫ</a>
+                <a class="nav-link" data-page="prints">ТИРАЖИ</a>
+                <a class="nav-link" data-page="contacts">КОНТАКТЫ</a>
+            </nav>
+        </header>
+
+        <!-- Лайтбокс -->
+        <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+            <img id="lightboxImg" src="" alt="Увеличенное изображение">
+        </div>
+
+        <!-- Галерея МУРАЛЫ -->
+        <div id="murals" class="gallery">
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/mural1.jpg" alt="Мурал 1">
+                <span class="caption">Фойе в Арт-резиденции ДКЖ г.Тула</span>
+            </div>
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/mural2.jpg" alt="Мурал 2">
+                <span class="caption">Жилой корпус "Терешкова" в ДОЛ "Звездный" г.Алексин</span>
+            </div>
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/mural3.jpg" alt="Мурал 3">
+                <span class="caption">Жилой корпус "Леонов" в ДОЛ "Звездный" г.Алексин</span>
+            </div>
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/mural4.jpg" alt="Мурал 4">
+                <span class="caption">Роспись ТЦ "Тройка" г.Тула</span>
+            </div>
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/mural5.jpg" alt="Мурал 5">
+                <span class="caption">Обеденная зона ДКЖ г.Тула</span>
+            </div>
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/mural6.jpg" alt="Мурал 6">
+                <span class="caption">Роспись отеля "Костерев" г. Москва</span>
+            </div>
+        </div>
+
+        <!-- Галерея КАРТИНЫ -->
+        <div id="paintings" class="gallery hidden-gallery">
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/art1.jpg" alt="Картина 1">
+                <span class="caption">"Звезда" 200х200 2025г. холст, акрил, смеш/тех</span>
+            </div>
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/art2.jpg" alt="Картина 2">
+                <span class="caption">"Перед прыжком" 100х100 2025г. холст, акрил геометрография</span>
+            </div>
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/art3.jpg" alt="Картина 3">
+                <span class="caption">"Последний день ...и" 120х120 2022г. холст, акрил, смеш/тех</span>
+            </div>
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/art4.jpg" alt="Картина 4">
+                <span class="caption">Триптих "Волна" 300х120 2020г. оргалит, акрил, геометрография</span>
+            </div>
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/art5.jpg" alt="Картина 5">
+                <span class="caption">"Смелость" 20х30 2021г. оргалит, акрил, смеш/тех</span>
+            </div>
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/art6.jpg" alt="Картина 6">
+                <span class="caption">"Композиция №3" 100х100 2023г. холст, акрил геометрография</span>
+            </div>
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/art7.jpg" alt="Картина 7">
+                <span class="caption">"Красота" 20х30 2021г. оргалит, геометрография</span>
+            </div>
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/art8.jpg" alt="Картина 8">
+                <span class="caption">"Мария" 120х120 2019г. оргалит, акриол, смеш/тех</span>
+            </div>
+        </div>
+
+        <!-- Галерея ТИРАЖИ -->
+        <div id="prints" class="gallery hidden-gallery">
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/streetfroggy.jpg" alt="Тираж 1">
+                <span class="caption">Кашпо 12х12см</span>
+            </div>
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/streetfroggy2.jpg" alt="Тираж 2">
+                <span class="caption">Кашпо 34х34см</span>
+            </div>
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/streetfroggy3.jpg" alt="Тираж 3">
+                <span class="caption">Коллекционные Street-froggy</span>
+            </div>
+            <div class="item" onclick="openLightbox(this)">
+                <img src="images/streetfroggy4.jpg" alt="Тираж 4">
+                <span class="caption">Скульптуры Street-froggy</span>
+            </div>
+        </div>
+
+        <!-- Страница КОНТАКТЫ -->
+        <div id="contacts" class="contacts-page">
+            <div class="contacts-container">
+                <!-- Фото слева -->
+                <img src="images/portrait.jpg" alt="Портрет Никиты" class="contacts-portrait">
+
+                <!-- Текст и ссылки справа -->
+                <div class="contacts-info">
+                    <h1>ЗУДОВ НИКИТА</h1>
+                    <div class="subtitle">– СТРИТ-АРТ ХУДОЖНИК</div>
+                    
+                    <p class="bio">Мой художественный язык - геометрография: стиль, в котором нарратив классического текста шифруется простыми геометрическими фигурами с помощью каллиграфических техник. 
+                        Мои основные творческие темы - собственный жизненный путь, детство, взаимоотношения человека с природой, дуальность человеческой морали. 
+                        Стремлюсь соединить свой стиль со всеми творческими направлениями: живопись, скульптура, прикладное творчество, диджитал арт, анимация и многое другое... 
+                    </p>
+
+                    <ul class="contacts-list">
+                        <li>Почта: <a href="mailto:nikioto2@gmail.com">nikioto2@gmail.com</a></li>
+                        <li>Instagram: <a href="https://www.instagram.com/nikioto2?igsh=ZjVmY2JjbGt0aGtx" target="_blank">@nikioto2</a></li>
+                        <li>Telegram: <a href="https://t.me/nikioto2Full" target="_blank">@nikioto2Full</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Скрипт для переключения страниц
+            const links = document.querySelectorAll('.header nav a');
+            const pages = {
+                murals: document.getElementById('murals'),
+                paintings: document.getElementById('paintings'),
+                prints: document.getElementById('prints'),
+                contacts: document.getElementById('contacts')
+            };
+
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const pageName = link.getAttribute('data-page');
+
+                    // Убираем класс active со всех ссылок
+                    links.forEach(l => l.classList.remove('active'));
+                    // Добавляем на текущую
+                    link.classList.add('active');
+
+                    // Скрываем все секции
+                    Object.values(pages).forEach(el => {
+                        if (el) {
+                            el.classList.add('hidden-gallery');
+                            el.classList.remove('active-page');
+                        }
+                    });
+
+                    // Показываем нужную
+                    if (pages[pageName]) {
+                        if (pageName === 'contacts') {
+                            pages[pageName].classList.add('active-page');
+                        } else {
+                            pages[pageName].classList.remove('hidden-gallery');
+                        }
+                    }
+                });
+            });
+
+            // --- ФУНКЦИИ ДЛЯ ЛАЙТБОКСА ---
+            function openLightbox(element) {
+                const img = element.querySelector('img');
+                const lightbox = document.getElementById('lightbox');
+                const lightboxImg = document.getElementById('lightboxImg');
+                
+                lightboxImg.src = img.src;
+                lightboxImg.alt = img.alt;
+                lightbox.classList.add('active');
+            }
+
+            function closeLightbox() {
+                const lightbox = document.getElementById('lightbox');
+                lightbox.classList.remove('active');
+            }
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeLightbox();
+                }
+            });
+        </script>
+    </div>
+
+</body>
+</html>
