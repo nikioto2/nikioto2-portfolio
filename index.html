@@ -78,7 +78,7 @@
         .gallery {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 0;
+            gap: 1rem;
             margin-top: 2rem;
         }
 
@@ -103,19 +103,19 @@
         }
 
         .item .caption {
-            position: absolute;
-            bottom: 1rem;
-            left: 1rem;
-            color: white;
-            font-size: 0.9rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: white;
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    opacity: 1;              /* всегда видно */
+    pointer-events: none;
+}
 
-        .item:hover .caption {
-            opacity: 1;
-        }
+        
 
         .gallery.hidden-gallery {
             display: none;
